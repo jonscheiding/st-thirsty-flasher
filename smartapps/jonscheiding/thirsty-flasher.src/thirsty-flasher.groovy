@@ -43,7 +43,7 @@ def shouldBeFlashing() {
     }
 
     if (modes != null) {
-        if (!modes.any { it == location.currentMode }) {
+        if (!modes.contains(location.currentMode)) {
 	    	log.debug("No need to flash, mode is ${location.currentMode}.")
             return false
         }
