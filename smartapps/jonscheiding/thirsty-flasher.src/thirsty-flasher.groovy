@@ -29,7 +29,7 @@ preferences {
         input "sensor", "capability.waterSensor", title: "Sensor", required: true
     }
     section("Switch To Flash") {
-        input "light", "capability.switch", title: "Switch", required: true
+        input "lights", "capability.switch", title: "Switches", multiple: true, required: true
     }
     section("Only In Modes") {
         input "modes", "mode", title: "Modes", multiple: true, required: false
@@ -59,7 +59,7 @@ def flashIfNecessary(e) {
         return
     }
     
-    light.on()
+    lights.each { it.on() }
 
     flipSwitch()
     runIn(2, flipSwitch)
@@ -67,12 +67,14 @@ def flashIfNecessary(e) {
 }
 
 def flipSwitch() {
-    if(light.currentSwitch == "off") {
-    	log.debug("Turn light on.")
-        light.on()
-    } else {
-	    log.debug("Turn light off.")
-        light.off()
+    lights.each { 
+	    if(it.currentSwitch == "off") {
+        	log.debug("Turn ${it.displayName} on.")
+	        it.on()
+        } else {
+        	log.debug("Turn ${it.displayName} off.")
+        	it.off()
+        }
     }
 }
 
@@ -93,4 +95,5 @@ def updated() {
 def initialize() {
     subscribe(sensor, "water.dry", flashIfNecessary)
     subscribe(location, "mode", flashIfNecessary)
+    flashIfNecessary()
 }
