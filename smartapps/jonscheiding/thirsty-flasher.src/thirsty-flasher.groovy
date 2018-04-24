@@ -19,9 +19,9 @@ definition(
     author: "Jon Scheiding",
     description: "SmartApp that flashes a light when a water sensor goes dry.",
     category: "My Apps",
-    iconUrl: "http://cdn.device-icons.smartthings.com/Lighting/light11-icn.png",
-    iconX2Url: "http://cdn.device-icons.smartthings.com/Lighting/light11-icn@2x.png",
-    iconX3Url: "http://cdn.device-icons.smartthings.com/Lighting/light11-icn@2x.png")
+    iconUrl: "https://png.icons8.com/material/30/000000/light-automation.png",
+    iconX2Url: "https://png.icons8.com/material/60/000000/light-automation.png",
+    iconX3Url: "https://png.icons8.com/material/90/000000/light-automation.png")
 
 
 preferences {
