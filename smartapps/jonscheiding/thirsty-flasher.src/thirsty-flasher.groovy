@@ -34,6 +34,9 @@ preferences {
     section("Only In Modes") {
         input "modes", "mode", title: "Modes", multiple: true, required: false
     }
+    section("Notifications") {
+        input "sendNotifications", "bool", title: "Send Notifications", required: true
+    }
 }
 
 def shouldBeFlashing() {
@@ -54,7 +57,28 @@ def shouldBeFlashing() {
     return true
 }
 
-def flashIfNecessary(e) {
+def startFlashingIfNecessary(e) {
+    if (!shouldBeFlashing()) {
+        return
+    }
+
+    notifyIfNecessary()
+    
+    flashIfNecessary()
+}
+
+def notifyIfNecessary() {
+    def msg = "${app.label} is thirsty!"
+	log.info msg
+
+    if(!sendNotifications) {
+        return
+    }
+
+    sendPush msg
+}
+
+def flashIfNecessary() {
     if (!shouldBeFlashing()) {
         return
     }
@@ -93,7 +117,7 @@ def updated() {
 }
 
 def initialize() {
-    subscribe(sensor, "water.dry", flashIfNecessary)
-    subscribe(location, "mode", flashIfNecessary)
-    flashIfNecessary()
+    subscribe(sensor, "water.dry", startFlashingIfNecessary)
+    subscribe(location, "mode", startFlashingIfNecessary)
+    startFlashingIfNecessary()
 }
