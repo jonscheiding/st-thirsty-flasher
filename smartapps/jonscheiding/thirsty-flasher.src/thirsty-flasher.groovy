@@ -31,9 +31,6 @@ preferences {
     section("Switch To Flash") {
         input "lights", "capability.switch", title: "Switches", multiple: true, required: true
     }
-    section("Only In Modes") {
-        input "modes", "mode", title: "Modes", multiple: true, required: false
-    }
     section("Notifications") {
         input "sendNotifications", "bool", title: "Send Notifications", required: true
     }
@@ -45,13 +42,6 @@ def shouldBeFlashing() {
         return false
     }
 
-    if (modes != null) {
-        if (!modes.contains(location.currentMode)) {
-	    	log.debug("No need to flash, mode is ${location.currentMode}.")
-            return false
-        }
-    }
-    
     log.debug("Flash light because sensor is ${sensor.currentWater} and mode is ${location.currentMode}.")
 
     return true
