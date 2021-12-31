@@ -19,9 +19,10 @@ definition(
     author: "Jon Scheiding",
     description: "SmartApp that flashes a light when a water sensor goes dry.",
     category: "My Apps",
-    iconUrl: "https://png.icons8.com/material/30/000000/light-automation.png",
-    iconX2Url: "https://png.icons8.com/material/60/000000/light-automation.png",
-    iconX3Url: "https://png.icons8.com/material/90/000000/light-automation.png")
+    pausable: true,
+    iconUrl: "https://github.com/material-icons/material-icons-png/raw/master/png/black/invert_colors/baseline.png",
+    iconX2Url: "https://github.com/material-icons/material-icons-png/raw/master/png/black/invert_colors/baseline-2x.png",
+    iconX3Url: "https://github.com/material-icons/material-icons-png/raw/master/png/black/invert_colors/baseline-4x.png")
 
 
 preferences {
@@ -52,9 +53,33 @@ def startFlashingIfNecessary(e) {
         return
     }
 
+	captureInitialLightState()
+
     notifyIfNecessary()
     
     flashIfNecessary()
+}
+
+def captureInitialLightState() {
+    log.debug("Capturing previous light state before starting flashing.")
+    state.lights = [:]
+    lights.each {
+        log.debug("Light ${it.id} is ${it.currentSwitch}.")
+        state.lights[it.id] = it.currentSwitch
+    }
+}
+
+def restoreInitialLightState() {
+    log.debug("Restoring previous light state.")
+    state.lights = state.lights ?: [:]
+    lights.each {
+        log.debug("Light ${it.id} was ${state.lights[it.id]}.")
+    	switch(state.lights[it.id]) {
+            case "on": it.on(); break
+            case "off": it.off(); break
+        }
+    }
+    state.lights = [:]
 }
 
 def notifyIfNecessary() {
@@ -70,6 +95,7 @@ def notifyIfNecessary() {
 
 def flashIfNecessary() {
     if (!shouldBeFlashing()) {
+        restoreInitialLightState()
         return
     }
     
